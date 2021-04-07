@@ -3,6 +3,7 @@ package Application;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import BoardGame.BoardExeption;
 import Chess.ChessPiece;
 import Chess.ChessPosition;
 import Chess.Color;
@@ -46,6 +47,10 @@ public class UI {
     {
         try{
             String s = sc.nextLine();
+            if(s.length()>2)
+            {
+                throw new InputMismatchException("Erro lendo posição do xadrez: Valores validos vão de a1 até h8");
+            }
             char column = s.charAt(0);
             int row= (int)s.charAt(1)-48;
 
@@ -70,4 +75,9 @@ public class UI {
         }
         System.out.print(" ");
 	}
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+       } 
 }
