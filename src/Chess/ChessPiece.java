@@ -5,7 +5,7 @@ import BoardGame.Piece;
 import BoardGame.Position;
 
 public abstract class ChessPiece extends Piece{
-
+    
     private Color color;
 
     public ChessPiece(Board board, Color color) {
