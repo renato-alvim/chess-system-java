@@ -32,4 +32,21 @@ public class Position {
     public String toString() {
         return row+", "+column;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Position other = (Position) obj;
+        if (column != other.column)
+            return false;
+        if (row != other.row)
+            return false;
+        return true;
+    }
 }

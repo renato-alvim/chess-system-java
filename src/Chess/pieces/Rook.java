@@ -1,13 +1,17 @@
 package Chess.pieces;
 import BoardGame.Board;
 import BoardGame.Position;
+import Chess.ChessConscience;
 import Chess.ChessPiece;
 import Chess.Color;
 
 public class Rook extends ChessPiece {
 
-    public Rook(Board board, Color color) {
-        super(board, color);
+
+    boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+
+    public Rook(Board board, Color color,ChessConscience conscience) {
+        super(board, color,conscience);
     }
 
     @Override
@@ -15,13 +19,10 @@ public class Rook extends ChessPiece {
         return "R";
     }
 
-    @Override
-    public boolean[][] possibleMoves() {
-        boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
 
+    public void possibleMovesVertical()
+    {
         Position p = new Position(0,0);
-
-        //acima
 
         p.setValues(position.getRow()-1,position.getColumn());
         while(getBoard().positionExists(p)&&!getBoard().thereIsPiece(p))
@@ -34,8 +35,6 @@ public class Rook extends ChessPiece {
             mat[p.getRow()][p.getColumn()]=true;
         }
 
-        //abaixo
-
         p.setValues(position.getRow()+1,position.getColumn());
         while(getBoard().positionExists(p)&&!getBoard().thereIsPiece(p))
         {
@@ -46,8 +45,12 @@ public class Rook extends ChessPiece {
         {
             mat[p.getRow()][p.getColumn()]=true;
         }
+    }
 
-        //esquerda
+    public void possibleMovesHorizontal()
+    {
+
+        Position p = new Position(0,0);
 
         p.setValues(position.getRow(),position.getColumn()-1);
         while(getBoard().positionExists(p)&&!getBoard().thereIsPiece(p))
@@ -71,6 +74,38 @@ public class Rook extends ChessPiece {
         if(getBoard().positionExists(p)&&isThereOpponentPiece(p))
         {
             mat[p.getRow()][p.getColumn()]=true;
+        }
+    }
+
+
+    @Override
+    public boolean[][] possibleMoves() {
+
+        Position p = new Position(0,0);
+
+        //acima
+
+        if(getChessConscience().DirectionOfPin(this)=="Increasing"||getChessConscience().DirectionOfPin(this)=="Decreasing")
+        {
+            mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            return mat;
+        }
+
+        if(getChessConscience().DirectionOfPin(this)=="Horizontal")
+        {
+            mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            possibleMovesHorizontal();
+        }
+        else if(getChessConscience().DirectionOfPin(this)=="Vertical")
+        {
+            mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            possibleMovesVertical();
+        }
+        else if(getChessConscience().DirectionOfPin(this)=="None")
+        {
+        mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+        possibleMovesHorizontal();
+        possibleMovesVertical();
         }
 
         return mat;
