@@ -4,7 +4,6 @@ import java.util.List;
 import BoardGame.Board;
 import BoardGame.Position;
 import Chess.ChessConscience;
-import Chess.ChessMatch;
 import Chess.ChessPiece;
 import Chess.Color;
 
@@ -15,18 +14,17 @@ public class King extends ChessPiece {
         super(board, color,conscience);
     }
 
-    @Override
-    public String toString() {
-        return "K";
-    }
-
     private boolean canMove(Position position)
     {
         return !getBoard().thereIsPiece(position)||isThereOpponentPiece(position);
     }
 
     @Override
-    public boolean[][] possibleMoves() {
+    public String toString() {
+        return "K";
+    }
+
+    public boolean[][] naturalMoves(){
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
 
         Position p = new Position(0,0);
@@ -72,5 +70,51 @@ public class King extends ChessPiece {
             mat[p.getRow()][p.getColumn()]=true;
         
         return mat;
+    }
+
+    public boolean[][] movesOutCheck(){
+
+        boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+        
+        List<Position> KingPossibleMoves = getChessConscience().SafePositionsKing(this);
+
+    
+        setcanDefend(false);
+
+        if(KingPossibleMoves!=null)
+        {
+            for (Position x : KingPossibleMoves) {
+                    setcanDefend(true);
+                    mat[x.getRow()][x.getColumn()] = true;
+            }
+        }
+
+
+        return mat;
+    }
+    
+
+    @Override
+    public boolean[][] possibleMoves() {
+
+        King enemyKing = (King)getChessConscience().King(getOpositeColor());
+
+        
+        boolean[][] enemyKingMoves = enemyKing.naturalMoves();
+
+        boolean[][] allyKingMoves = movesOutCheck();
+
+        for(int i=0;i<getBoard().getRows();i++)
+        {
+            for(int j=0; j<getBoard().getColumns();j++)
+            {
+                if(enemyKingMoves[i][j]==true)
+                {
+                    allyKingMoves[i][j]=false;
+                }
+            }
+        }        
+        
+        return allyKingMoves;
     }
 }

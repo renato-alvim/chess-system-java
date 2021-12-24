@@ -39,7 +39,6 @@ public class Board {
         {
             throw new BoardExeption("Posição inexistente");
         }
-
         return pieces[position.getRow()][position.getColumn()];
     }
 

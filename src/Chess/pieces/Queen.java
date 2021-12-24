@@ -1,4 +1,6 @@
 package Chess.pieces;
+import java.util.List;
+
 import BoardGame.Board;
 import BoardGame.Position;
 import Chess.ChessConscience;
@@ -140,30 +142,66 @@ public class Queen extends ChessPiece {
         if(getChessConscience().DirectionOfPin(this)=="Horizontal")
         {
             mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            setcanDefend(false);
             possibleMovesHorizontal();
+            return mat;
         }
         else if(getChessConscience().DirectionOfPin(this)=="Vertical")
         {
             mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            setcanDefend(false);
             possibleMovesVertical();
+            return mat;
         }
         else if(getChessConscience().DirectionOfPin(this)=="Increasing")
         {
             mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            setcanDefend(false);
             possibleMovesIncreasing();
+            return mat;
         }
         else if(getChessConscience().DirectionOfPin(this)=="Decreasing")
         {
             mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+            setcanDefend(false);
             possibleMovesDecreasing();
+            return mat;
         }
         else if(getChessConscience().DirectionOfPin(this)=="None")
         {
         mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+        
         possibleMovesHorizontal();
         possibleMovesVertical();
         possibleMovesIncreasing();
         possibleMovesDecreasing();
+        }
+
+        List<List<Position>> allcheckers = getChessConscience().MovesToDefendKing(getColor());
+        
+        if(allcheckers!=null)
+        {
+            setcanDefend(false);
+            if(allcheckers.size()>=2)
+            {
+                return new boolean[getBoard().getRows()][getBoard().getColumns()];
+            }
+
+
+            List<Position> enemyChecker = allcheckers.get(0);
+
+            boolean[][] matAux = new boolean[getBoard().getRows()][getBoard().getColumns()];
+
+            for (Position x : enemyChecker) {
+
+                if(mat[x.getRow()][x.getColumn()] == true)
+                {
+                    setcanDefend(true);
+                    matAux[x.getRow()][x.getColumn()] = true;
+                }
+            }
+
+            return matAux;
         }
 
         return mat;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import BoardGame.BoardExeption;
+
 import Chess.ChessMatch;
 import Chess.ChessPiece;
 import Chess.ChessPosition;
@@ -49,12 +49,21 @@ public class UI {
 
     public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured)
     {
+        
         printBoard(chessMatch.getPieces());
         System.out.println();
         printCapturedPieces(captured);
         System.out.println();
         System.out.println("TURN: "+chessMatch.getTurn());
-        System.out.println("Waiting Player: "+chessMatch.getCurrentPlayer());
+        if(chessMatch.isMatchAlive(chessMatch.getCurrentPlayer()))
+        {
+            System.out.println("Waiting Player: "+chessMatch.getCurrentPlayer());
+        }
+        else
+        {
+            System.out.println("CHECKMATE!");
+            System.out.println("WINNER: "+ chessMatch.opponent());
+        }
     }
 
     public static void printBoard(ChessPiece[][] pieces,boolean[][]possibleMoves)

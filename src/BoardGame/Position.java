@@ -1,6 +1,6 @@
 package BoardGame;
 
-public class Position {
+public class Position implements Cloneable {
 
     private int row;
     private int column;
@@ -8,6 +8,16 @@ public class Position {
     public Position(int row, int column) {
         this.row = row;
         this.column = column;
+    }
+
+    public Position(Position p) throws Exception
+    {
+        if(p==null)
+        {
+            throw new Exception("Posicao ausente para copiar");
+        }
+        this.row = p.row;
+        this.column =p.column;
     }
     
     public int getRow() {
@@ -33,7 +43,6 @@ public class Position {
         return row+", "+column;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -49,4 +58,21 @@ public class Position {
             return false;
         return true;
     }
+
+    @Override
+    public Object clone()
+    {
+        Position ret = null;
+        try
+        {
+            ret = new Position(this);
+        }
+        catch(Exception erro)
+        {}
+        return ret;
+    }
+
+
+
+
 }

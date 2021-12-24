@@ -6,9 +6,8 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import BoardGame.Board;
+
 import BoardGame.BoardExeption;
-import BoardGame.Position;
 import Chess.ChessException;
 import Chess.ChessMatch;
 import Chess.ChessPiece;
@@ -21,7 +20,7 @@ public class App {
         ChessMatch chessMatch = new ChessMatch();
         List<ChessPiece> captured = new ArrayList<>();
 
-        for(int i=0;i<=100;i++)
+        while(chessMatch.isMatchAlive(chessMatch.getCurrentPlayer()))
         {
             try{
             UI.clearScreen();
@@ -40,10 +39,18 @@ public class App {
 
             ChessPiece capturedPiece= chessMatch.performChessMove(source, target);
 
-            if(capturedPiece!=null)
-            {
-                captured.add(capturedPiece);
-            }
+            
+
+                if(capturedPiece!=null)
+                {
+                    captured.add(capturedPiece);
+                }
+
+                if(chessMatch.getPromoted()!=null){
+                    System.out.println("Enter piece for promotion (B/N/R/Q): ");
+                    String type = sc.nextLine(); 
+                    chessMatch.replacePromotedPiece(type);
+                }
             }
             catch(ChessException e)
             {
@@ -61,9 +68,13 @@ public class App {
                 sc.nextLine();
             }
         }
+        UI.clearScreen();
+        UI.printMatch(chessMatch, captured);
 
         sc.close();
 
     }
+
+
     
 }
