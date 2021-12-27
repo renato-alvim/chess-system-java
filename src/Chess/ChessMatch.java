@@ -18,6 +18,9 @@ public class ChessMatch {
     private Board board;
     private int turn;
     private Color currentPlayer;
+    private boolean draw;
+    private boolean checkmate;
+    private boolean check;
 
     private List<ChessPiece> piecesOnTheBoard = new ArrayList<>();
     private List<ChessPiece> capturedPieces = new ArrayList<>();
@@ -42,6 +45,21 @@ public class ChessMatch {
     public Color getCurrentPlayer()
     {
         return currentPlayer;
+    }
+
+    public boolean isDraw()
+    {
+        return draw;
+    }
+
+    public boolean isCheckMate()
+    {
+        return checkmate;
+    }
+
+    public boolean isCheck()
+    {
+        return checkmate;
     }
 
     public ChessPiece getPromoted(){
@@ -85,6 +103,8 @@ public class ChessMatch {
 
     private void initialSetup()
     {
+
+        
         //BLACK PIECES
         placeNewPiece('a',8, new Rook(board,Color.BLACK,conscience));
         placeNewPiece('b', 8, new Knight(board, Color.BLACK, conscience));
@@ -99,32 +119,33 @@ public class ChessMatch {
         //placeNewPiece('a', 7, new Pawn(board, Color.BLACK, conscience));
         placeNewPiece('b', 7, new Pawn(board, Color.BLACK, conscience));
         placeNewPiece('c', 7, new Pawn(board, Color.BLACK, conscience));
-        //placeNewPiece('d', 7, new Pawn(board, Color.BLACK, conscience));
-        //placeNewPiece('e', 7, new Pawn(board, Color.BLACK, conscience));
+        placeNewPiece('d', 7, new Pawn(board, Color.BLACK, conscience));
+        placeNewPiece('e', 7, new Pawn(board, Color.BLACK, conscience));
         placeNewPiece('f', 7, new Pawn(board, Color.BLACK, conscience));
         placeNewPiece('g', 7, new Pawn(board, Color.BLACK, conscience));
         placeNewPiece('h', 7, new Pawn(board, Color.BLACK, conscience));
 
         //WHITE PIECES
         placeNewPiece('a',1, new Rook(board,Color.WHITE,conscience));
-        //placeNewPiece('b', 1, new Knight(board, Color.WHITE, conscience));
-        //placeNewPiece('c',1, new Bishop(board,Color.WHITE,conscience));
-        //placeNewPiece('d', 1, new Queen(board, Color.WHITE, conscience));
+        placeNewPiece('b', 1, new Knight(board, Color.WHITE, conscience));
+        placeNewPiece('c',1, new Bishop(board,Color.WHITE,conscience));
+        placeNewPiece('d', 1, new Queen(board, Color.WHITE, conscience));
         placeNewPiece('e',1, new King(board,Color.WHITE,conscience));
         placeNewPiece('f',1, new Bishop(board,Color.WHITE,conscience));
         placeNewPiece('g', 1, new Knight(board, Color.WHITE, conscience));
         placeNewPiece('h',1, new Rook(board,Color.WHITE,conscience));
         
         //WHITE PAWNS
-        //placeNewPiece('a', 2, new Pawn(board, Color.WHITE, conscience));
+        placeNewPiece('a', 2, new Pawn(board, Color.WHITE, conscience));
         placeNewPiece('b', 2, new Pawn(board, Color.WHITE, conscience));
         placeNewPiece('c', 2, new Pawn(board, Color.WHITE, conscience));
-        //placeNewPiece('d', 2, new Pawn(board, Color.WHITE, conscience));
-        //placeNewPiece('e', 2, new Pawn(board, Color.WHITE, conscience));
+        placeNewPiece('d', 2, new Pawn(board, Color.WHITE, conscience));
+        placeNewPiece('e', 2, new Pawn(board, Color.WHITE, conscience));
         placeNewPiece('f', 2, new Pawn(board, Color.WHITE, conscience));
         placeNewPiece('g', 2, new Pawn(board, Color.WHITE, conscience));
         placeNewPiece('h', 2, new Pawn(board, Color.WHITE, conscience));
 
+        
 
     }
 
@@ -167,7 +188,10 @@ public class ChessMatch {
             conscience.setMovedPiece(null);
         }
 
-        nextTurn();
+        if(isMatchAlive(opponent()))
+        {
+            nextTurn();
+        }
 
         return (ChessPiece)capturedPiece;
     }
@@ -199,11 +223,22 @@ public class ChessMatch {
     {
         if(conscience.isCheck(opponent))
         {
+            check = true;
             if(conscience.isCheckMate(opponent))
             {
+                checkmate=true;
                 return false;
             }
             return true;
+        }
+        else
+        {
+            check = false;
+            if(conscience.testStalemate(opponent))
+            {
+                draw = true;
+                return false;
+            }
         }
         return true;
     }

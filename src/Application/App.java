@@ -20,7 +20,7 @@ public class App {
         ChessMatch chessMatch = new ChessMatch();
         List<ChessPiece> captured = new ArrayList<>();
 
-        while(chessMatch.isMatchAlive(chessMatch.getCurrentPlayer()))
+        while(!(chessMatch.isCheckMate()||chessMatch.isDraw()))
         {
             try{
             UI.clearScreen();

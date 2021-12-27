@@ -64,7 +64,23 @@ public class ChessConscience {
 
     private void testCheckMate(Color player)
     {
+
+        boolean[][] kingMoves = King(player).possibleMoves();
+
+        for(int i=0;i<board.getRows();i++)
+            {
+                for(int j=0;j<board.getColumns();j++)
+                {
+                    if(kingMoves[i][j]==true)
+                    {
+                        checkMate = false;
+                        return;
+                    }
+                }
+            }
+
         List<ChessPiece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == player).collect(Collectors.toList());
+
 
         for (ChessPiece chessPiece : list) {
             chessPiece.possibleMoves();
@@ -76,6 +92,29 @@ public class ChessConscience {
         }
         checkMate = true;
         return;
+    }
+
+    public boolean testStalemate(Color player)
+    {
+        List<ChessPiece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == player).collect(Collectors.toList());
+
+        for(ChessPiece chessPiece : list)
+        {
+            boolean[][] moves = chessPiece.possibleMoves();
+
+            for(int i=0;i<board.getRows();i++)
+            {
+                for(int j=0;j<board.getColumns();j++)
+                {
+                    if(moves[i][j]==true)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
 

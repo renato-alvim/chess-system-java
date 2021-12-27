@@ -14,10 +14,6 @@ public class King extends ChessPiece {
         super(board, color,conscience);
     }
 
-    private boolean canMove(Position position)
-    {
-        return !getBoard().thereIsPiece(position)||isThereOpponentPiece(position);
-    }
 
     @Override
     public String toString() {
@@ -31,42 +27,42 @@ public class King extends ChessPiece {
 
         //ACIMA
         p.setValues(position.getRow()-1,position.getColumn());
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //ABAIXO
         p.setValues(position.getRow()+1,position.getColumn());
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //ESQUERDA
         p.setValues(position.getRow(),position.getColumn()-1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //DIREITA
         p.setValues(position.getRow(),position.getColumn()+1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
     
         //NOROESTE
         p.setValues(position.getRow()-1,position.getColumn()-1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //NORDESTE
         p.setValues(position.getRow()-1,position.getColumn()+1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //SUDOESTE
         p.setValues(position.getRow()+1,position.getColumn()-1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
 
         //SUDESTE
         p.setValues(position.getRow()+1,position.getColumn()+1);
-        if(getBoard().positionExists(p)&&canMove(p))
+        if(getBoard().positionExists(p))
             mat[p.getRow()][p.getColumn()]=true;
         
         return mat;
@@ -75,6 +71,8 @@ public class King extends ChessPiece {
     public boolean[][] movesOutCheck(){
 
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
+        King enemyKing = (King)getChessConscience().King(getOpositeColor());
+        boolean[][] enemyKingMoves = enemyKing.naturalMoves();
         
         List<Position> KingPossibleMoves = getChessConscience().SafePositionsKing(this);
 
@@ -83,9 +81,16 @@ public class King extends ChessPiece {
 
         if(KingPossibleMoves!=null)
         {
+            setcanDefend(false);
             for (Position x : KingPossibleMoves) {
-                    setcanDefend(true);
-                    mat[x.getRow()][x.getColumn()] = true;
+                    if(enemyKingMoves[x.getRow()][x.getColumn()]==false)
+                    {
+                        setcanDefend(true);
+                        mat[x.getRow()][x.getColumn()] = true;
+                    }
+                    else{
+                        mat[x.getRow()][x.getColumn()] = false;
+                    }
             }
         }
 
@@ -97,24 +102,8 @@ public class King extends ChessPiece {
     @Override
     public boolean[][] possibleMoves() {
 
-        King enemyKing = (King)getChessConscience().King(getOpositeColor());
-
-        
-        boolean[][] enemyKingMoves = enemyKing.naturalMoves();
-
         boolean[][] allyKingMoves = movesOutCheck();
 
-        for(int i=0;i<getBoard().getRows();i++)
-        {
-            for(int j=0; j<getBoard().getColumns();j++)
-            {
-                if(enemyKingMoves[i][j]==true)
-                {
-                    allyKingMoves[i][j]=false;
-                }
-            }
-        }        
-        
         return allyKingMoves;
     }
 }
